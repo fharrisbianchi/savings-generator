@@ -40,12 +40,23 @@ const App = () => {
 
   const handleExportToExcel = () => {
     try {
-      const gridData = generateGridForExcel(periodType, periodValue, savingsPerPeriod, numColumns); // Genera los datos de la cuadrícula para exportar a Excel
+      const gridData = generateGridForExcel(
+        periodType,
+        periodValue,
+        savingsPerPeriod,
+        numColumns
+      ); // Genera los datos de la cuadrícula para exportar a Excel
       if (gridData.length === 0) {
         console.error('No data to export');
         return;
       }
-      exportToExcel(periodType, periodValue, savingsPerPeriod, numColumns, 'savings_data.xlsx');
+      exportToExcel(
+        periodType,
+        periodValue,
+        savingsPerPeriod,
+        numColumns,
+        'savings_data.xlsx'
+      );
     } catch (error) {
       console.error('Error exporting to Excel:', error);
     }
@@ -55,7 +66,12 @@ const App = () => {
     const doc = new jsPDF();
 
     // Get data for the table
-    const data = generateDataForPDF(periodType, periodValue, savingsPerPeriod, numColumns);
+    const data = generateDataForPDF(
+      periodType,
+      periodValue,
+      savingsPerPeriod,
+      numColumns
+    );
 
     // Set styling options for the table
     const options = {
@@ -72,7 +88,12 @@ const App = () => {
     doc.save('savings_data.pdf');
   };
 
-  const generateDataForPDF = (periodType, periodValue, savingsPerPeriod, numColumns) => {
+  const generateDataForPDF = (
+    periodType,
+    periodValue,
+    savingsPerPeriod,
+    numColumns
+  ) => {
     const isDays = periodType === 'days';
     const totalPeriods = periodValue;
     let currentPeriod = 1;
@@ -84,7 +105,10 @@ const App = () => {
       for (let j = 0; j < numColumns && currentPeriod <= totalPeriods; j++) {
         const value = currentPeriod * savingsPerPeriod;
         totalValue = value; // Accumulate the total value
-        rowData.push({ day: `${isDays ? 'Day' : 'Week'} ${currentPeriod}`, value: value });
+        rowData.push({
+          day: `${isDays ? 'Day' : 'Week'} ${currentPeriod}`,
+          value: value,
+        });
         currentPeriod++;
       }
       data.push(rowData);
@@ -103,8 +127,8 @@ const App = () => {
     let currentY = options.startY;
     let currentX = startX;
 
-    data.forEach(row => {
-      row.forEach(cell => {
+    data.forEach((row) => {
+      row.forEach((cell) => {
         // Draw blue rectangle for day without border
         doc.setFillColor(0, 128, 255); // Color de fondo azul
         doc.setDrawColor(0); // Sin borde
@@ -113,27 +137,41 @@ const App = () => {
         // Add day text inside the rectangle
         doc.setTextColor(255, 255, 255); // Color de texto blanco
         doc.setFontSize(8); // Tamaño de fuente para el día
-        doc.text(currentX + columnWidth / 2, currentY + 10, cell.day.toString(), null, null, 'center'); // Texto centrado del día
+        doc.text(
+          currentX + columnWidth / 2,
+          currentY + 10,
+          cell.day.toString(),
+          null,
+          null,
+          'center'
+        ); // Texto centrado del día
 
         // Add value below the rectangle
         doc.setTextColor(0); // Color de texto negro
         doc.setFontSize(12); // Tamaño de fuente para el valor
-        doc.text(currentX + columnWidth / 2, currentY + 25, cell.value.toString(), null, null, 'center'); // Texto centrado del valor
+        doc.text(
+          currentX + columnWidth / 2,
+          currentY + 25,
+          cell.value.toString(),
+          null,
+          null,
+          'center'
+        ); // Texto centrado del valor
 
         // Move to next position
         currentX += columnWidth; // Mover a la siguiente columna
 
         // Check if there is no space left in the current row or if it exceeds the maximum number of columns per page
-        if (currentX >= options.maxX || currentX - startX >= maxColumnsPerPage * columnWidth) {
+        if (
+          currentX >= options.maxX ||
+          currentX - startX >= maxColumnsPerPage * columnWidth
+        ) {
           currentX = startX; // Reiniciar X al principio de la fila
           currentY += 40; // Mover a la siguiente fila con un espacio entre bloques
         }
       });
     });
   };
-
-
-
 
   return (
     <div className="container mt-5">
@@ -223,14 +261,19 @@ const App = () => {
                 Export to PDF
               </button>
             </React.Fragment>
-
           )}
         </div>
       </div>
       {gridGenerated && (
         <div className="row mt-3">
           <div className="col">
-            {generateGridForWeb(periodType, periodValue, savingsPerPeriod, numColumns)} {/* Utiliza la función para generar la cuadrícula para la web */}
+            {generateGridForWeb(
+              periodType,
+              periodValue,
+              savingsPerPeriod,
+              numColumns
+            )}{' '}
+            {/* Utiliza la función para generar la cuadrícula para la web */}
           </div>
         </div>
       )}
