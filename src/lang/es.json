@@ -1,0 +1,16 @@
+{
+    "number_of_columns": "Número de Columnas",
+    "period_type": "Periodo",
+    "days": "Días",
+    "weeks": "Semanas",
+    "months": "Meses",
+    "day": "Día",
+    "week": "Semana",
+    "month": "Mes",
+    "number_of": "Número de ",
+    "savings_per": "Ahorros por ",
+    "total_value": "Valor total: ",
+    "generate_grid": "Generar grilla",
+    "export_excel": "Exportar a Excel",
+    "export_pdf": "Exportar a PDF"
+  }

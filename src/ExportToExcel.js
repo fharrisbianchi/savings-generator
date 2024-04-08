@@ -37,10 +37,6 @@ export const exportToExcel = (periodType, periodValue, savingsPerPeriod, numColu
     // Extract data from grid
     let { data } = extractDataFromGrid(gridData);
 
-    // Add a row at the end for the total amount saved
-    const totalRow = ['Total', ...data[0].slice(2).map(cell => isNaN(cell) ? '' : Number(cell)).reduce((acc, val) => acc + val, 0)];
-    data.push(totalRow);
-
     // Convert data to Excel sheet
     const ws = XLSX.utils.aoa_to_sheet(data);
 

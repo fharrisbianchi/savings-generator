@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+
 import 'bootstrap/dist/css/bootstrap.min.css';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -6,6 +9,57 @@ import ReactDOMServer from 'react-dom/server'; // Import ReactDOMServer
 import { generateGridForWeb } from './GridGenerator'; // Importa la función para generar la cuadrícula para la web
 import { exportToExcel } from './ExportToExcel';
 import { generateGridForExcel } from './GridGenerator';
+
+
+import esTranslations from './lang/es.json';
+import enTranslations from './lang/en.json';
+
+
+// Configura i18next con las traducciones de es.json
+i18n
+  .use(initReactI18next)
+  .init({
+    lng: 'es',
+    fallbackLng: 'en',
+    resources: {
+      es: {
+        translation: esTranslations
+      },
+      en: {
+        translation: enTranslations
+      }
+    },
+    interpolation: {
+      escapeValue: false
+    }
+  });
+
+const LanguageSwitcher = () => {
+  const [currentLanguage, setCurrentLanguage] = useState(i18n.language);
+
+  // Update the language immediately when the currentLanguage state changes
+  useEffect(() => {
+    i18n.changeLanguage(currentLanguage);
+  }, [currentLanguage]);
+
+  const handleLanguageChange = (e) => {
+    setCurrentLanguage(e.target.value);
+  };
+
+  return (
+    <select
+      className="form-select"
+      id="languageSelect"
+      onChange={handleLanguageChange}
+      value={currentLanguage} // Usa value en lugar de defaultValue para controlar el estado del select
+
+    >
+      <option value="en">English</option>
+      <option value="es">Español</option>
+    </select>
+  );
+};
+
 
 const App = () => {
   const [periodType, setPeriodType] = useState('days');
@@ -106,7 +160,7 @@ const App = () => {
         const value = currentPeriod * savingsPerPeriod;
         totalValue = value; // Accumulate the total value
         rowData.push({
-          day: `${isDays ? 'Day' : 'Week'} ${currentPeriod}`,
+          day: `${isDays ? i18n.t('day') : i18n.t('week')} ${currentPeriod}`,
           value: value,
         });
         currentPeriod++;
@@ -115,7 +169,7 @@ const App = () => {
     }
 
     // Add total row to data
-    data.push([{ day: 'Total Value', value: totalValue }]);
+    data.push([{ day: i18n.t('total_value'), value: totalValue }]);
     return data;
   };
 
@@ -178,7 +232,7 @@ const App = () => {
       <div className="row">
         <div className="col-sm-3 mt-3">
           <label htmlFor="periodTypeInput" className="form-label">
-            Period Type:
+            {i18n.t('period_type')}
           </label>
           <select
             className="form-select"
@@ -186,13 +240,14 @@ const App = () => {
             value={periodType}
             onChange={handlePeriodTypeChange}
           >
-            <option value="days">Days</option>
-            <option value="weeks">Weeks</option>
+            <option value="days">{i18n.t('days')}</option>
+            <option value="weeks">{i18n.t('weeks')}</option>
+            <option value="months">{i18n.t('months')}</option>
           </select>
         </div>
         <div className="col-sm-3 mt-3">
           <label htmlFor="periodValueInput" className="form-label">
-            Number of {periodType === 'days' ? 'Days' : 'Weeks'}:
+            {i18n.t('number_of')} {['days', 'weeks', 'months'].includes(periodType) ? (i18n.t(periodType)) : ''}:
           </label>
           <input
             type="number"
@@ -204,7 +259,7 @@ const App = () => {
         </div>
         <div className="col-sm-3 mt-3">
           <label htmlFor="savingsInput" className="form-label">
-            Savings per {periodType === 'days' ? 'Day' : 'Week'}:
+            {i18n.t('savings_per')} {['days', 'weeks', 'months'].includes(periodType) ? (i18n.t(periodType)) : ''}:
           </label>
           <input
             type="number"
@@ -216,7 +271,7 @@ const App = () => {
         </div>
         <div className="col-sm-3 mt-3">
           <label htmlFor="numColumnsInput" className="form-label">
-            Number of Columns:
+            {i18n.t('number_of_columns')}
           </label>
           <select
             className="form-select"
@@ -236,13 +291,13 @@ const App = () => {
         </div>
       </div>
       <div className="row mt-3">
-        <div className="col-sm-12 d-flex justify-content-end">
+        <div className="col-sm-8 d-flex justify-content-end">
           <button
             type="button"
             className="btn btn-primary me-2"
             onClick={handleClickGenerateGrid}
           >
-            Generate Grid
+            {i18n.t('generate_grid')}
           </button>
           {gridGenerated && (
             <React.Fragment>
@@ -251,19 +306,23 @@ const App = () => {
                 className="btn btn-success me-2"
                 onClick={handleExportToExcel}
               >
-                Export to Excel
+                {i18n.t('export_excel')}
               </button>
               <button
                 type="button"
                 className="btn btn-danger"
                 onClick={handleExportToPDF}
               >
-                Export to PDF
+                {i18n.t('export_pdf')}
               </button>
             </React.Fragment>
           )}
         </div>
+        <div className="col-sm-4">
+          <LanguageSwitcher />
+        </div>
       </div>
+
       {gridGenerated && (
         <div className="row mt-3">
           <div className="col">
@@ -273,7 +332,6 @@ const App = () => {
               savingsPerPeriod,
               numColumns
             )}{' '}
-            {/* Utiliza la función para generar la cuadrícula para la web */}
           </div>
         </div>
       )}

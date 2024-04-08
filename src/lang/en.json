@@ -1,0 +1,16 @@
+{
+    "number_of_columns": "Number of Columns",
+    "period_type": "Period Type",
+    "days": "Days",
+    "weeks": "Weeks",
+    "months": "Months",
+    "day": "Day",
+    "week": "Week",
+    "month": "Month",
+    "number_of": "Number of ",
+    "savings_per": "Savings per ",
+    "total_value": "Total value: ",
+    "generate_grid": "Generate Grid",
+    "export_excel": "Export to Excel",
+    "export_pdf": "Export to PDF"
+}
